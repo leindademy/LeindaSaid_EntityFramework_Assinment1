@@ -36,8 +36,6 @@ namespace LeindaSaid_EntityFramework_Assinment1.Entity
         [Column(TypeName = "varchar(50)")]
         [StringLength(50, ErrorMessage = "Name cannot be longer than 50 characters.")]
         public string Description { get; set; }
-
-
         public List<Stud_Course> Stud_Course { get; set; }   // Using A Imlicit Join
 
 

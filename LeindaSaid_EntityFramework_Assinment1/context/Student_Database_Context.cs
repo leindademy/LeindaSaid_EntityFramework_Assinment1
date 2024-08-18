@@ -17,7 +17,18 @@ namespace LeindaSaid_EntityFramework_Assinment1.context
         }
         override protected void OnModelCreating(ModelBuilder modelBuilder)
         {
-     
+                    modelBuilder.Entity<Instructor>()
+            .HasOne(i => i.department)
+            .WithMany(d => d.Instructors)
+            .HasForeignKey(i => i.deptId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+                    modelBuilder.Entity<Student>()
+                .HasOne(s => s.Department)
+            .WithMany(d => d.Students)
+            .HasForeignKey(s => s.deptId) // SetNull delete for Department -> Student
+            .OnDelete(DeleteBehavior.SetNull);  // SetNull delete for Department -> Student
+
         }
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
@@ -25,6 +36,7 @@ namespace LeindaSaid_EntityFramework_Assinment1.context
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<Topic> Topics { get; set; }
         public DbSet<Stud_Course> Stud_Courses { get; set; }
+        public DbSet<Instructor_Course> Instructor_Courses { get; set; }
 
 
 

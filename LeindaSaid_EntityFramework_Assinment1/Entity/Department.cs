@@ -21,11 +21,13 @@ namespace LeindaSaid_EntityFramework_Assinment1.Entity
 
 
         //HiringDate
-        [DataType(DataType.Date)]
-        public string HiringDate { get; set; }
+        [DataType(DataType.DateTime)]
+        public DateTime HiringDate  { get; set; }
         public int Ins_ID { get; set; } // Foreign Key
         public List<Instructor> Instructors { get; set; }
         public List<Student> Students { get; set; }
+
+       
 
 
     }

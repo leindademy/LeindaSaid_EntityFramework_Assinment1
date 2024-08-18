@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace LeindaSaid_EntityFramework_Assinment1.Entity
 {
+    [PrimaryKey(nameof(Stud_ID), nameof(Course_ID))] //Composite key
     public class Stud_Course
     {
         public Student Student { get; set; }
         public Course Course { get; set; }
-
 
         //Stud_ID
         public int Stud_ID { get; set; } //Composite key
