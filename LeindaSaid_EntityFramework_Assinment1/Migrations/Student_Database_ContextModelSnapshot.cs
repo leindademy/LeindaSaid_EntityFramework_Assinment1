@@ -69,9 +69,8 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("HiringDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("HiringDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Ins_ID")
                         .HasColumnType("int");

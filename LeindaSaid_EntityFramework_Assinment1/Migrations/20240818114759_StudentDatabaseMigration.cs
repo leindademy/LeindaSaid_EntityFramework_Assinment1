@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace LeindaSaid_EntityFramework_Assinment1.Migrations
 {
-    public partial class instructorcourses : Migration
+    public partial class StudentDatabaseMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Create Departments Table
             migrationBuilder.CreateTable(
                 name: "Departments",
                 columns: table => new
@@ -16,7 +16,7 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    HiringDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HiringDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Ins_ID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -24,7 +24,6 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
                     table.PrimaryKey("PK_Departments", x => x.Id);
                 });
 
-            // Create Topics Table
             migrationBuilder.CreateTable(
                 name: "Topics",
                 columns: table => new
@@ -39,14 +38,13 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
                     table.PrimaryKey("PK_Topics", x => x.Id);
                 });
 
-            // Create Instructors Table
             migrationBuilder.CreateTable(
                 name: "Instructors",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    deptId = table.Column<int>(type: "int", nullable: false),
+                    deptId = table.Column<int>(type: "int", nullable: true), // Set to nullable
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Bouns = table.Column<int>(type: "int", nullable: false),
                     salary = table.Column<int>(type: "int", nullable: false),
@@ -64,7 +62,6 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
                         onDelete: ReferentialAction.SetNull);
                 });
 
-            // Create Students Table
             migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
@@ -75,7 +72,7 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(50)", maxLength: 100, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
-                    deptId = table.Column<int>(type: "int", nullable: false)
+                    deptId = table.Column<int>(type: "int", nullable: true) // Set to nullable
                 },
                 constraints: table =>
                 {
@@ -88,7 +85,6 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
                         onDelete: ReferentialAction.SetNull);
                 });
 
-            // Create Courses Table
             migrationBuilder.CreateTable(
                 name: "Courses",
                 columns: table => new
@@ -118,7 +114,6 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            // Create Instructor_Courses Table
             migrationBuilder.CreateTable(
                 name: "Instructor_Courses",
                 columns: table => new
@@ -144,18 +139,19 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            // Create Stud_Courses Table
             migrationBuilder.CreateTable(
                 name: "Stud_Courses",
                 columns: table => new
                 {
+                    Stud_ID = table.Column<int>(type: "int", nullable: false),
+                    Course_ID = table.Column<int>(type: "int", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false),
                     grade = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Stud_Courses", x => new { x.StudentId, x.CourseId });
+                    table.PrimaryKey("PK_Stud_Courses", x => new { x.Stud_ID, x.Course_ID });
                     table.ForeignKey(
                         name: "FK_Stud_Courses_Courses_CourseId",
                         column: x => x.CourseId,
@@ -170,68 +166,64 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            // Create Indexes
-            migrationBuilder.Sql(@"
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Courses_InstructorId' AND object_id = OBJECT_ID('Courses'))
-                BEGIN
-                    CREATE INDEX [IX_Courses_InstructorId] ON [Courses] ([InstructorId]);
-                END
-            ");
+            migrationBuilder.CreateIndex(
+                name: "IX_Courses_InstructorId",
+                table: "Courses",
+                column: "InstructorId");
 
-            migrationBuilder.Sql(@"
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Courses_TopicId' AND object_id = OBJECT_ID('Courses'))
-                BEGIN
-                    CREATE INDEX [IX_Courses_TopicId] ON [Courses] ([TopicId]);
-                END
-            ");
+            migrationBuilder.CreateIndex(
+                name: "IX_Courses_TopicId",
+                table: "Courses",
+                column: "TopicId");
 
-            migrationBuilder.Sql(@"
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Instructor_Courses_CourseId' AND object_id = OBJECT_ID('Instructor_Courses'))
-                BEGIN
-                    CREATE INDEX [IX_Instructor_Courses_CourseId] ON [Instructor_Courses] ([CourseId]);
-                END
-            ");
+            migrationBuilder.CreateIndex(
+                name: "IX_Instructor_Courses_CourseId",
+                table: "Instructor_Courses",
+                column: "CourseId");
 
-            migrationBuilder.Sql(@"
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Instructors_deptId' AND object_id = OBJECT_ID('Instructors'))
-                BEGIN
-                    CREATE INDEX [IX_Instructors_deptId] ON [Instructors] ([deptId]);
-                END
-            ");
+            migrationBuilder.CreateIndex(
+                name: "IX_Instructors_deptId",
+                table: "Instructors",
+                column: "deptId");
 
-            migrationBuilder.Sql(@"
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Stud_Courses_CourseId' AND object_id = OBJECT_ID('Stud_Courses'))
-                BEGIN
-                    CREATE INDEX [IX_Stud_Courses_CourseId] ON [Stud_Courses] ([CourseId]);
-                END
-            ");
+            migrationBuilder.CreateIndex(
+                name: "IX_Stud_Courses_CourseId",
+                table: "Stud_Courses",
+                column: "CourseId");
 
-            migrationBuilder.Sql(@"
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Students_deptId' AND object_id = OBJECT_ID('Students'))
-                BEGIN
-                    CREATE INDEX [IX_Students_deptId] ON [Students] ([deptId]);
-                END
-            ");
+            migrationBuilder.CreateIndex(
+                name: "IX_Stud_Courses_StudentId",
+                table: "Stud_Courses",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Students_deptId",
+                table: "Students",
+                column: "deptId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            // Drop Indexes
-            migrationBuilder.DropIndex(name: "IX_Students_deptId", table: "Students");
-            migrationBuilder.DropIndex(name: "IX_Stud_Courses_CourseId", table: "Stud_Courses");
-            migrationBuilder.DropIndex(name: "IX_Instructor_Courses_CourseId", table: "Instructor_Courses");
-            migrationBuilder.DropIndex(name: "IX_Instructors_deptId", table: "Instructors");
-            migrationBuilder.DropIndex(name: "IX_Courses_TopicId", table: "Courses");
-            migrationBuilder.DropIndex(name: "IX_Courses_InstructorId", table: "Courses");
+            migrationBuilder.DropTable(
+                name: "Instructor_Courses");
 
-            // Drop Tables
-            migrationBuilder.DropTable(name: "Instructor_Courses");
-            migrationBuilder.DropTable(name: "Stud_Courses");
-            migrationBuilder.DropTable(name: "Courses");
-            migrationBuilder.DropTable(name: "Students");
-            migrationBuilder.DropTable(name: "Instructors");
-            migrationBuilder.DropTable(name: "Topics");
-            migrationBuilder.DropTable(name: "Departments");
+            migrationBuilder.DropTable(
+                name: "Stud_Courses");
+
+            migrationBuilder.DropTable(
+                name: "Courses");
+
+            migrationBuilder.DropTable(
+                name: "Students");
+
+            migrationBuilder.DropTable(
+                name: "Instructors");
+
+            migrationBuilder.DropTable(
+                name: "Topics");
+
+            migrationBuilder.DropTable(
+                name: "Departments");
         }
     }
 }

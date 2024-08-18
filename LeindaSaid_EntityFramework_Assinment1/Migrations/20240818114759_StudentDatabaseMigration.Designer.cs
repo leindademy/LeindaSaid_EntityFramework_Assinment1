@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeindaSaid_EntityFramework_Assinment1.Migrations
 {
     [DbContext(typeof(Student_Database_Context))]
-    [Migration("20240817223039_instructor-courses")]
-    partial class instructorcourses
+    [Migration("20240818114759_StudentDatabaseMigration")]
+    partial class StudentDatabaseMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,9 +72,8 @@ namespace LeindaSaid_EntityFramework_Assinment1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("HiringDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("HiringDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Ins_ID")
                         .HasColumnType("int");
